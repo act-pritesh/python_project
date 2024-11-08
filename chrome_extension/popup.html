@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Extract Data Using XPath</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+    }
+    .box {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin: 50px auto;
+      background-color: white;
+    }
+    .box textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      min-height: 100px;
+      font-family: monospace;
+    }
+    .box button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .box button:hover {
+      background-color: #0056b3;
+    }
+    .outputBox {
+      min-height: 150px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Input Section for XPath Expressions -->
+  <div class="box">
+    <h2>Enter XPath Expressions</h2>
+    <textarea id="inputText" placeholder='write xpath here....'></textarea>
+    <button id="submitButton">Submit</button>
+  </div>
+
+   <!-- Output Section for Extracted Data -->
+  <div class="box">
+    <h2>Extracted Data</h2>
+    <textarea id="outputText" placeholder="Extracted data will appear here..." readonly></textarea>
+    <button id="exportExcelButton">Export to Excel</button>
+  </div>
+
+<!-- Load the XLSX library locally -->
+  <script src="xlsx.full.min.js"></script>
+  <script src="popup.js"></script>
+
+</body>
+</html>
