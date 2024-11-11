@@ -49,23 +49,32 @@
   </style>
 </head>
 <body>
-  <!-- Input Section for XPath Expressions -->
-  <div class="box">
-    <h2>Enter XPath Expressions</h2>
-    <textarea id="inputText" placeholder='write xpath here....'></textarea>
+<div id="popup">
+  <!-- Input Section for URL and XPath Expressions -->
+  <div class="box" id="popupContent">
+    <h2>Enter URL and XPath</h2>
+    <textarea id="fileinput" placeholder='Enter File Name here....'></textarea>
+    <button id="fetchButton">Fetch HTML</button>
+    <textarea id="htmlResponse" placeholder="HTML response will appear here..." readonly></textarea>
+    <textarea id="inputText" placeholder='Write XPath here....'></textarea>
     <button id="submitButton">Submit</button>
   </div>
 
-   <!-- Output Section for Extracted Data -->
+  <!-- Network Files Section -->
+  <div class="box">
+    <h2>Network Files</h2>
+    <textarea id="networkFiles" placeholder="Network files will appear here..." readonly></textarea>
+  </div>
+
+  <!-- Output Section for Extracted Data -->
   <div class="box">
     <h2>Extracted Data</h2>
     <textarea id="outputText" placeholder="Extracted data will appear here..." readonly></textarea>
     <button id="exportExcelButton">Export to Excel</button>
   </div>
-
-<!-- Load the XLSX library locally -->
+</div>
+  <!-- Load the XLSX library locally -->
   <script src="xlsx.full.min.js"></script>
   <script src="popup.js"></script>
-
 </body>
 </html>
