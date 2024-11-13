@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "XPath Data Extractor",
+  "description": "Extract data using XPath",
+  "version": "1.0",
+  "permissions": ["scripting",
+    "activeTab",
+    "tabs",
+    "storage",
+    "debugger",
+    "webRequest"],
+  "action": {
+    "default_title": "XPath Data Extractor"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+   "devtools_page": "devtools.html"
+}
