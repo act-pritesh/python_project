@@ -5,76 +5,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Extract Data Using XPath</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f7fc;
-      margin: 0;
-      padding: 0;
-    }
-    .box {
-      width: 300px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      margin: 50px auto;
-      background-color: white;
-    }
-    .box textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-      min-height: 100px;
-      font-family: monospace;
-    }
-    .box button {
-      padding: 10px 20px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
-    }
-    .box button:hover {
-      background-color: #0056b3;
-    }
-    .outputBox {
-      min-height: 150px;
-    }
+     body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+  }
+
+  .box {
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 50px auto;
+    background-color: white;
+  }
+
+  .box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-height: 100px;
+    font-family: monospace;
+  }
+
+  .box button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .box button:hover {
+    background-color: #0056b3;
+  }
+
+  .outputBox {
+    min-height: 150px;
+  }
+
+  #networkFiles {
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    background-color: #f9f9f9;
+    color: #333;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+
+  #networkFiles::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  #networkFiles::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+  }
+
+  #networkFiles::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .network-item {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+
+  .network-item .key {
+    font-weight: bold;
+    color: #007bff;
+  }
+
   </style>
 </head>
 <body>
-<div id="popup">
-  <!-- Input Section for URL and XPath Expressions -->
-  <div class="box" id="popupContent">
-    <h2>Enter URL and XPath</h2>
-    <textarea id="fileinput" placeholder='Enter File Name here....'></textarea>
-    <button id="fetchButton">Fetch HTML</button>
-    <textarea id="htmlResponse" placeholder="HTML response will appear here..." readonly></textarea>
-    <textarea id="inputText" placeholder='Write XPath here....'></textarea>
-    <button id="submitButton">Submit</button>
-  </div>
-
-  <!-- Network Files Section -->
-  <div class="box">
-    <h2>Network Files</h2>
-    <textarea id="networkFiles" placeholder="Network files will appear here..." readonly></textarea>
-  </div>
-
-  <!-- Output Section for Extracted Data -->
-  <div class="box">
-    <h2>Extracted Data</h2>
-    <textarea id="outputText" placeholder="Extracted data will appear here..." readonly></textarea>
+<div class="box">
+    <h2>Enter Name to Match Network Request</h2>
+    <textarea id="fileinput" placeholder="Enter name (e.g., 'fetch')..."></textarea>
+    <button id="fetchButton">Fetch Response</button>
+    <textarea id="htmlResponse" placeholder="Response will appear here (HTML or JSON)..." readonly></textarea>
+    <textarea id="inputText" placeholder="Write XPath here..."></textarea>
+    <button id="submitXPathButton">Execute XPath</button>
+    <textarea id="xpathResult" placeholder="XPath result will appear here..." readonly></textarea>
     <button id="exportExcelButton">Export to Excel</button>
-  </div>
 </div>
-  <!-- Load the XLSX library locally -->
-  <script src="xlsx.full.min.js"></script>
-  <script src="popup.js"></script>
+
+<div class="box">
+    <h2>Network Files</h2>
+    <button id="captureNetworkButton">Capture Network Requests</button>
+    <textarea id="networkFiles" placeholder="Network files will appear here..." readonly></textarea>
+</div>
+<script src="xlsx.full.min.js"></script>
+<script src="popup.js"></script>
 </body>
 </html>
