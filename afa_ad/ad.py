@@ -4,22 +4,25 @@ import requests
 from parsel import Selector
 import pandas as pd
 
-
+#formate date to yy-mm-dd
 def convert_date(date_str):
     # Convert the string to a datetime object
     date_obj = datetime.strptime(date_str, '%d/%m/%Y')
     # Format the datetime object to the desired format (yy-mm-dd)
     return date_obj.strftime('%Y-%m-%d')
 
+#remove punctuation
 def remove_specific_punctuation(text):
     punctuation_marks = [
         ".", ",", "?", "!", ":", ";", "—", "-", "'", '"', "[", "]", "{", "}", "…", "\\", "@", "&", "*",
-        "_", "^", "~", "`", "/", "“", "”", "(", ")","  "
+        "_", "^", "~", "`", "/", "“", "”", "(", ")", "  ","’"
     ]
     for char in punctuation_marks:
         text = str(text).replace(char, '')
     return text
 
+
+#get the page data
 def page_data(href, url, status, date, name, header, cookies, all_data):
     # Sending a GET request to fetch the page content
     response = requests.get(href, headers=header, cookies=cookies)
@@ -65,7 +68,7 @@ def page_data(href, url, status, date, name, header, cookies, all_data):
     # Append the extracted data to the list
     all_data.append(extracted_data)
 
-
+#fetch page link and their data
 def page_link(response, header, cookies, url, all_data):
     parsed_data = Selector(response.text)
     all_links = parsed_data.xpath('//div[@id="list_items"]/a')
@@ -78,7 +81,6 @@ def page_link(response, header, cookies, url, all_data):
         final_name=remove_specific_punctuation(name)
         print(href)
         page_data(href, url, status, final_date, final_name, header, cookies, all_data)
-
 
 def main():
     """Main function to initiate web scraping."""
