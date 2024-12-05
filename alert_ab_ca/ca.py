@@ -1,8 +1,7 @@
+import os
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
-
-
 import pandas as pd
 import requests
 from parsel import Selector
@@ -34,15 +33,6 @@ def page_data(href,header,cookies,url):
     description=parsed_data.xpath('//div[@class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-4334163"]/div//text() | //div[@class="dynamic-content-for-elementor-acf "]//text()').getall()
     final_dis=' '.join(description).replace('\n','').replace('\t','').replace('&nbsp','').strip()
     final_dis = re.sub(r'\s+', ' ', final_dis)
-    # print(f"Title: {title}")
-    # print(f"url:{href}")
-    # print(f"article_url:{url}")
-    # print(f"Date: {formatted_date}")
-    # print(f"Description: {final_dis}")
-    # print("-" * 80)  # Separator for clarity
-    # else:
-    #     pass
-    # Creating a base entry for the extracted data
     data_entry = {
         'url': url,
         'title': title if title else "N/A",
@@ -52,13 +42,19 @@ def page_data(href,header,cookies,url):
     }
     data_entries.append(data_entry)
 
+def create_output_folder(folder_name="output"):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
 # Function to save data to an Excel file
 def save_to_excel(filename='ca_data.xlsx'):
-    # Convert the list of data into a pandas DataFrame
+    # Create the output folder if it doesn't exist
+    output_folder = "output"
+    create_output_folder(output_folder)
+    # Save the data to Excel inside the created folder
+    output_file = os.path.join(output_folder, "alert_ab_ca.xlsx")
     df = pd.DataFrame(data_entries)
-    # Save the DataFrame to an Excel file
-    df.to_excel(filename, index=False, engine='openpyxl')
-    print(f"Data saved to {filename}")
+    df.to_excel(output_file, index=False)
+    print(f"Data successfully written to {output_file}")
 
 def page_link(response,header,cookies,url):
     parsed_data = Selector(response.text)
