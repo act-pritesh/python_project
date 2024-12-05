@@ -1,5 +1,10 @@
 import locale
+import os
 import re
+from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
+
+import unicodedata
 from deep_translator import GoogleTranslator  # More stable translator library
 from datetime import datetime
 from re import findall
@@ -8,7 +13,7 @@ import requests
 from parsel import Selector
 import pandas as pd
 
-
+data_lock=Lock()
 # Helper functions
 def replace_spaces_only(url):
     return url.replace(" ", "%20")
@@ -61,12 +66,21 @@ def convert_dates_to_yy_mm_dd(date_list):
 
 
 def remove_specific_punctuation(text):
+    # Normalize the text to remove accents
+    text = ''.join(
+        c for c in unicodedata.normalize('NFD', text)
+        if unicodedata.category(c) != 'Mn'
+    )
+    # Decode any non-standard Unicode sequences
+    text = text.encode('latin1', 'ignore').decode('utf-8', 'ignore')
+    # List of punctuation marks to remove
     punctuation_marks = [
         ".", ",", "?", "!", ":", ";", "—", "-", "'", '"', "(", ")", "[", "]", "{", "}", "…", "\\", "@", "&", "*",
-        "_", "^", "~", "`", "/", "", "", "\x89",""
+        "_", "^", "~", "`", "/", "", "", "\x89", "","'"
     ]
+    # Remove specified punctuation marks
     for char in punctuation_marks:
-        text = str(text).replace(char, '')
+        text = text.replace(char, '')
     return text
 
 
@@ -121,33 +135,34 @@ def page_data(response, url, encoded_url, data_list):
             break
 
     converted_date = convert_dates_to_yy_mm_dd(birth_date)
-    reward_amount = findall("\([\$ \d.]+\)", cleaned_text)
+    reward_amount = findall("\([\$ \d,.]+\)", cleaned_text)
     final_reward = '|'.join(reward_amount).replace("(", '').replace(')', '')
     print(translated_name)
-    data_list.append({
-        "url": url,
-        "name": translated_name,
-        "alias_name": "N/A",
-        "data_url": encoded_url,
-        "dni_number": dni_number[0] if dni_number else "N/A",
-        "date_of_birth": converted_date[0] if converted_date else "N/A",
-        "parentage": "N/A",
-        "address": "N/A",
-        "reason": "N/A",
-        "case_summary": translated_case_summary,
-        "reward_amount": final_reward,
-        "complexion": "N/A",
-        "height": "N/A",
-        "hair_color": "N/A",
-        "additional_information": "N/A"
-    })
+    with data_lock:
+        data_list.append({
+            "url": url,
+            "name": translated_name,
+            "alias_name": "N/A",
+            "data_url": encoded_url,
+            "dni_number": dni_number[0] if dni_number else "N/A",
+            "date_of_birth": converted_date[0] if converted_date else "N/A",
+            "parentage": "N/A",
+            "address": "N/A",
+            "reason": "N/A",
+            "case_summary": translated_case_summary,
+            "reward_amount": final_reward ,
+            "complexion": "N/A",
+            "height": "N/A",
+            "hair_color": "N/A",
+            "additional_information": "N/A"
+        })
 
 
 def page_link(response, header, url, data_list):
     parsed_data = Selector(response.text)
     all_links = parsed_data.xpath('//table/tbody/tr/td/a')
 
-    for data in all_links:
+    def process_link(data):
         href = data.xpath('./@href').get()
         if href:
             href = href.replace("", '').replace("", '').replace("Ã", 'Á')
@@ -160,6 +175,13 @@ def page_link(response, header, url, data_list):
             response = requests.get(encoded_url, headers=header)
             page_data(response, url, encoded_url, data_list)
 
+    # Using ThreadPoolExecutor for concurrent execution
+    with ThreadPoolExecutor() as executor:
+        executor.map(process_link, all_links)
+
+def create_output_folder(folder_name="output"):
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
 
 def main():
     headers = {
@@ -176,9 +198,15 @@ def main():
     data_list = []
     page_link(response, headers, url, data_list)
 
+    # Create the output folder if it doesn't exist
+    output_folder = "output"
+    create_output_folder(output_folder)
+
+    # Save the data to Excel inside the created folder
+    output_file = os.path.join(output_folder, "mseg_gba_gov_ar.xlsx")
     df = pd.DataFrame(data_list)
-    output_file = "ar.xlsx"
     df.to_excel(output_file, index=False)
+
     print(f"Data successfully written to {output_file}")
 
 
