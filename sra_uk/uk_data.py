@@ -168,20 +168,7 @@ def page_link(response):
         entries = html_data(full_href, outcome_keys)  # Get entries from each link
         all_entries.extend(entries)  # Extend the all_entries list
 
-    # Create a DataFrame from all entries
-    # final_df = pd.DataFrame(all_entries)
-    #
-    # # Add empty columns for any outcome keys that are not present in each entry
-    # for key in outcome_keys:
-    #     if key not in final_df.columns:
-    #         final_df[key] = None  # Add empty column for missing outcomes
-    #
-    # # Fill empty cells with "N/A"
-    # final_df.fillna("N/A", inplace=True)
-    #
-    # # Save the DataFrame to an Excel file
-    # final_df.to_excel('uk_data.xlsx', index=False)  # Save as 'extracted_data.xlsx'
-    # print("Data has been written to extracted_data.xlsx")  # Confirmation message
+
     output_folder = "output"
     create_output_folder(output_folder)
     df = pd.DataFrame(all_entries)
